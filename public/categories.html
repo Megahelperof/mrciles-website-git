@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mrciles</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600&family=Gruppo&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <link rel="stylesheet" href="style.css">    
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mrciles</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600&family=Gruppo&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <link rel="stylesheet" href="style.css">    
+    <style>
+                .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            z-index: 1000;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .header.scrolled {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container {
+            max-width: 1017px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .header-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 0;
+            }
+
+            .logo {
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+                order: 1;
+            }
+
+            .logo img {
+                width: 55px;
+                height: 55px;
+                object-fit: contain;
+            }
+
+            .burger-menu {
+                display: flex;
+                flex-direction: column;
+                cursor: pointer;
+                order: 2;
+                padding: 5px;
+            }
+
+            .burger-line {
+                width: 25px;
+                height: 3px;
+                background: #333;
+                margin: 3px 0;
+                transition: all 0.5s ease;
+            }
+
+            .burger-menu.active .burger-line:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .burger-menu.active .burger-line:nth-child(2) {
+                opacity: 0;
+            }
+
+            .burger-menu.active .burger-line:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -6px);
+            }
+
+            .nav-menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: white;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.5s ease;
+            }
+
+            .nav-menu.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .nav-list {
+                list-style: none;
+                padding: 20px 0;
+                font-family: 'Gruppo', cursive;
+            }
+
+            .nav-item {
+                margin: 0;
+            }
+
+            .nav-link {
+                display: block;
+                padding: 15px 20px;
+                color: #333;
+                text-decoration: none;
+                font-weight: 500;
+                font-family: 'Gruppo', cursive;
+                font-size: 18px;
+                transition: background-color 0.3s ease;
+            }
+
+            .nav-link:hover {
+                background-color: #f5f5f5;
+            }
+        }
+
+        /* Desktop Styles */
+        @media (min-width: 769px) {
+            .header-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+            }
+
+            .logo {
+                font-size: 28px;
+                font-weight: bold;
+                color: #333;
+                text-decoration: none;
+                margin-bottom: 15px;
+            }
+
+            .logo img {
+                width: 82.01px;
+                height: 82.01px;
+                object-fit: contain;
+            }
+
+            .burger-menu {
+                display: none;
+            }
+        }
+        .more-button {
+            display: inline-block;
+            width: 100%;
+            max-width: 200px;
+            height: 50px;
+            padding: 12px 24px;
+            background-color: black;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            font-family: 'Inconsolata', monospace;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            border: none;
+            cursor: pointer;
+            margin: 0 auto 20px auto;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            line-height: 26px;
+        }
+
+        .more-button:hover {
+            background-color: #ffffff;
+            color: black;
+        }
+
+        .categories-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 200px);
+            padding: 40px 20px;
+            margin-top: 80px; /* Space below header */
+        }
+
+        .categories-title {
+            font-family: 'Gruppo', cursive;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-align: center;
+            color: black;
+        }
+
+        .categories-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            width: 100%;
+            max-width: 250px;
+        }
+
+        @media (max-width: 768px) {
+            .categories-container {
+                margin-top: 70px;
+                padding: 20px;
+            }
+            
+            .categories-title {
+                font-size: 2rem;
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header" id="header">
+        <div class="header-container">
+            <div class="header-content">
+<a href="#" class="logo">
+  <img src="fun-logo-mxBZJz1oj7to9RaM.avif" alt="Your Logo">
+</a>
+                <div class="burger-menu" id="burgerMenu">
+                    <div class="burger-line"></div>
+                    <div class="burger-line"></div>
+                    <div class="burger-line"></div>
+                </div>
+
+                <nav class="nav-menu" id="navMenu">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link">Home</a>
+                        </li>
+                        <li class="nav-item">
+                        <a href="/categories.html" class="nav-link">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                        <a href="/for-reseller.html" class="nav-link">For resellers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/info.html" class="nav-link">Info</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/update-log.html" class="nav-link">Update Log</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="categories-container">
+
+        <div class="categories-grid">
+            <a href="/category/mens.html" class="more-button">MENS</a>
+            <a href="/category/women.html" class="more-button">WOMEN</a>
+            <a href="/category/kids.html" class="more-button">KIDS</a>
+            <a href="/category/tech.html" class="more-button">TECH</a>
+            <a href="/category/jewelries.html" class="more-button">JEWELRIES & ACCESSORIES</a>
+            <a href="/category/misc.html" class="more-button">MISC</a>
+        </div>
+    </div>
+
+      <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDSOLS2H_bBZowlyZmJMA8sARcSz4FHhDE",
+  authDomain: "mrciles-01001.firebaseapp.com",
+  databaseURL: "https://mrciles-01001-default-rtdb.firebaseio.com",
+  projectId: "mrciles-01001",
+  storageBucket: "mrciles-01001.firebasestorage.app",
+  messagingSenderId: "939971384636",
+  appId: "1:939971384636:web:003b8ca34080544462ba39",
+  measurementId: "G-BBJ91GKF8W"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    navLinks.forEach(link => {
+        if (link.getAttribute('href') === currentPath || 
+            (currentPath === '/' && link.getAttribute('href') === '/') ||
+            (currentPath.includes(link.getAttribute('href')) && link.getAttribute('href') !== '/')) {
+            link.classList.add('active');
+        }
+    });
+});
+
+function filterCategory(category) {
+    console.log('Filtering category:', category);
+}
+  </script>
+
+<script src="index.js"></script>
+</body>
+</html>

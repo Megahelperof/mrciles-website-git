@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mrciles</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600&family=Gruppo&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <link rel="stylesheet" href="style.css">    
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mrciles</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600&family=Gruppo&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <link rel="stylesheet" href="style.css">    
+    <style>
+                .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            z-index: 1000;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .header.scrolled {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container {
+            max-width: 1017px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .header-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 0;
+            }
+
+            .logo {
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+                order: 1;
+            }
+
+            .logo img {
+                width: 55px;
+                height: 55px;
+                object-fit: contain;
+            }
+
+            .burger-menu {
+                display: flex;
+                flex-direction: column;
+                cursor: pointer;
+                order: 2;
+                padding: 5px;
+            }
+
+            .burger-line {
+                width: 25px;
+                height: 3px;
+                background: #333;
+                margin: 3px 0;
+                transition: all 0.5s ease;
+            }
+
+            .burger-menu.active .burger-line:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .burger-menu.active .burger-line:nth-child(2) {
+                opacity: 0;
+            }
+
+            .burger-menu.active .burger-line:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -6px);
+            }
+
+            .nav-menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: white;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.5s ease;
+            }
+
+            .nav-menu.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .nav-list {
+                list-style: none;
+                padding: 20px 0;
+                font-family: 'Gruppo', cursive;
+            }
+
+            .nav-item {
+                margin: 0;
+            }
+
+            .nav-link {
+                display: block;
+                padding: 15px 20px;
+                color: #333;
+                text-decoration: none;
+                font-weight: 500;
+                font-family: 'Gruppo', cursive;
+                font-size: 18px;
+                transition: background-color 0.3s ease;
+            }
+
+            .nav-link:hover {
+                background-color: #f5f5f5;
+            }
+        }
+
+        /* Desktop Styles */
+        @media (min-width: 769px) {
+            .header-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+            }
+
+            .logo {
+                font-size: 28px;
+                font-weight: bold;
+                color: #333;
+                text-decoration: none;
+                margin-bottom: 15px;
+            }
+
+            .logo img {
+                width: 82.01px;
+                height: 82.01px;
+                object-fit: contain;
+            }
+
+            .burger-menu {
+                display: none;
+            }
+        }
+        .more-button {
+            display: inline-block;
+            width: 100%;
+            max-width: 200px;
+            height: 50px;
+            padding: 12px 24px;
+            background-color: black;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            font-family: 'Inconsolata', monospace;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            border: none;
+            cursor: pointer;
+            margin: 0 auto 20px auto;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            line-height: 26px;
+        }
+
+        .more-button:hover {
+            background-color: #ffffff;
+            color: black;
+        }
+          .password-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .password-container h2 {
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    font-size: 1.5rem;
+  }
+
+  .password-container p {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    word-wrap: break-word;
+  }
+
+  .password-container a {
+    color: #1a0dab;
+    text-decoration: none;
+  }
+
+  .password-container a:hover,
+  .password-container a:focus {
+    text-decoration: underline;
+  }
+
+  #password-input {
+    width: 100%;
+    max-width: 320px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline-offset: 2px;
+    outline-color: transparent;
+    transition: outline-color 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  #password-input:focus {
+    outline-color: #0073e6;
+  }
+
+  #unlock-btn {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    max-width: 320px;
+    background-color: #191919;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+
+  #unlock-btn:hover,
+  #unlock-btn:focus {
+    background-color: #333333;
+  }
+
+  .message {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: #e53935; /* red for error */
+    min-height: 1.25em; /* prevent layout shift */
+  }
+
+  .footer-link {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 400px) {
+    #password-input, #unlock-btn {
+      max-width: 100%;
+    }
+  }
+          .categories-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 200px);
+            padding: 40px 20px;
+            margin-top: 80px; /* Space below header */
+        }
+
+        .categories-title {
+            font-family: 'Gruppo', cursive;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-align: center;
+            color: black;
+        }
+
+        .categories-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            width: 100%;
+            max-width: 250px;
+        }
+
+        @media (max-width: 768px) {
+            .categories-container {
+                margin-top: 70px;
+                padding: 20px;
+            }
+            
+            .categories-title {
+                font-size: 2rem;
+                margin-bottom: 30px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="password-container" class="password-container">
+  <h2>For Resellers.</h2>
+  <p>Get Password Here: <a href="https://shorturl.at/8g9ZW" target="_blank" rel="noopener noreferrer">https://shorturl.at/8g9ZW</a></p>
+  <input type="password" id="password-input" placeholder="what's the password?" aria-label="Password Input" />
+  <button id="unlock-btn">Unlock</button>
+  <p id="message" class="message"></p>
+  <footer class="footer-link">
+    Return To <a href="#" id="home-link">Home</a>
+  </footer>
+</div>
+
+<div id="main-content" style="display:none;">
+        <header class="header" id="header">
+        <div class="header-container">
+            <div class="header-content">
+<a href="#" class="logo">
+  <img src="fun-logo-mxBZJz1oj7to9RaM.avif" alt="Your Logo">
+</a>
+                <div class="burger-menu" id="burgerMenu">
+                    <div class="burger-line"></div>
+                    <div class="burger-line"></div>
+                    <div class="burger-line"></div>
+                </div>
+
+                <nav class="nav-menu" id="navMenu">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link">Home</a>
+                        </li>
+                        <li class="nav-item">
+                        <a href="/categories.html" class="nav-link">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                        <a href="/for-reseller.html" class="nav-link">For resellers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/info.html" class="nav-link">Info</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/update-log.html" class="nav-link">Update Log</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="categories-container">
+
+        <div class="categories-grid">
+            <a href="/category/trusted.html" class="more-button">Trusted Vendors</a>
+            <a href="/category/bible.html" class="more-button">Mr.Cile Bible (guide to reselling)</a>
+            <a href="/category/viewbot.html" class="more-button">Mr.Cile View Bot</a>
+            <a href="/private/online-tools.html" class="more-button">Online Tools</a>
+            <a href="/category/reselling.html" class="more-button">Reselling tools</a>
+        </div>
+    </div>
+</div>
+
+      <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDSOLS2H_bBZowlyZmJMA8sARcSz4FHhDE",
+  authDomain: "mrciles-01001.firebaseapp.com",
+  databaseURL: "https://mrciles-01001-default-rtdb.firebaseio.com",
+  projectId: "mrciles-01001",
+  storageBucket: "mrciles-01001.firebasestorage.app",
+  messagingSenderId: "939971384636",
+  appId: "1:939971384636:web:003b8ca34080544462ba39",
+  measurementId: "G-BBJ91GKF8W"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    navLinks.forEach(link => {
+        if (link.getAttribute('href') === currentPath || 
+            (currentPath === '/' && link.getAttribute('href') === '/') ||
+            (currentPath.includes(link.getAttribute('href')) && link.getAttribute('href') !== '/')) {
+            link.classList.add('active');
+        }
+    });
+});
+const encoded = "TXJDaWxlJ3NUcnVzdGVkVjRuZG9ycw==";
+
+function isPasswordCorrect(input) {
+    const decoded = atob(encoded); 
+    return input === decoded;
+}
+
+document.getElementById('unlock-btn').addEventListener('click', () => {
+    const password = document.getElementById('password-input').value;
+    const messageEl = document.getElementById('message');
+
+    if (isPasswordCorrect(password)) {
+        messageEl.style.color = 'green';
+        messageEl.textContent = 'Access granted.';
+    } else {
+        messageEl.style.color = 'red';
+        messageEl.textContent = 'Incorrect password. Try again.';
+    }
+});
+
+(function(){
+    const key = "TXJDaWxlJ3NUcnVzdGVkVjRuZG9ycw==";
+    function check(p) {
+        return p === atob(key);
+    }
+
+  function check(p) {
+    return p === atob(encoded);
+  }
+
+  document.getElementById('unlock-btn').addEventListener('click', () => {
+    const pw = document.getElementById('password-input').value;
+    const msg = document.getElementById('message');
+
+    if (check(pw)) {
+      msg.style.color = 'green';
+      msg.textContent = 'Access granted.';
+
+      document.getElementById('password-container').style.display = 'none';
+      document.getElementById('main-content').style.display = 'block';
+    } else {
+      msg.style.color = 'red';
+      msg.textContent = 'Incorrect password. Try again.';
+    }
+  });
+})();
+
+
+  </script>
+
+<script src="index.js"></script>
+</body>
+</html>
+
+
+
